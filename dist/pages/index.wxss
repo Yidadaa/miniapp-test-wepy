@@ -1,2 +1,3 @@
+@import "./../components/Detail.wxss";
 @import "./../components/UserInfo.wxss";
-.user-bg{width:100%;height:500rpx}
+.container{position:fixed;top:0;left:0;height:100%}.container .user-bg{width:100%;height:500rpx}.container .loading-tip{width:100%;text-align:center;font-size:30rpx;color:#aaa;padding:20rpx 0}

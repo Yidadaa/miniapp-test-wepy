@@ -28,6 +28,14 @@ const myInfo = {
 }
 
 /**
+ * 返回n以内的整数
+ * @param {*Number} n 
+ */
+function rand(n) {
+  return parseInt(Math.random() * n)
+}
+
+/**
  * 模仿实际请求中的延迟
  * @param {Object} data 需要返回的数据
  * @return {Promise} 包装后的Promise
@@ -40,11 +48,12 @@ const response = (data) => new Promise((resolve, reject) => {
 
 /**
  * 生成某一天的假数据
+ * @param {Number} 距今天几天
  */
-const getDateList = () => {
+const getDateList = n => {
   const data = {
     "recordid": "xxxxxxxxxxx",   //记录id
-    "date": "2016-11-23",        //记录日期
+    "date": new Date(new Date() - n * 24 * 3600 * 1000),        //记录日期
     "text": "xxxxxxxx",         //系统建议 
     "data": []
   }
@@ -54,7 +63,7 @@ const getDateList = () => {
       "value": [{ //blood时是[lowpress,highpress,heart],其他都是单个
         "value": 12,     //具体指标 的值
         "para": "",       //体重传BMI，血糖传meal_type，其他不传
-        "remark": "今天头痛",
+        "remark": new Array(rand(10) + 10).fill('今天头痛').join(''),
         "ctime": "2016-01-12 12:00:12",
         "bmesh": "loinc-123213",   //指标
         "name": "高压",   //空腹血糖，饭前血糖
@@ -69,10 +78,13 @@ const getDateList = () => {
     });
   }
   return Object.assign({}, data, {
-    data: item(5)
+    data: item(1)
   })
 }
 
+/**
+ * 生成用户的假数据
+ */
 function getUserDetail() {
   return response({
     "status": 0,
@@ -82,7 +94,7 @@ function getUserDetail() {
       "count": 10,                  //总记录数
       "currentpage": 1,             //当前页
       "totalpage": 5,               //每页显示数
-      "list": getDateList()
+      "list": new Array(10).fill(0).map((v, i) => getDateList(i))
     }, userInfo)
   })
 }

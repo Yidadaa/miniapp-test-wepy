@@ -1,0 +1,30 @@
+<template>
+<view>
+  {{ item.date }}
+  {{ specialDay }}
+  <!-- <view wx:if="specialDay" class="spcial-day">{{ item.date }}</view>
+  <view wx:else>
+    <text>{{ day }}</text>
+    <text>{{ month }}</text>
+  </view> -->
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+
+export default class DetailDate extends wepy.component {
+  props = {
+    item: {}
+  }
+
+  data = {
+    month: '',
+    day: ''
+  }
+
+  compute = {
+
+  }
+}
+</script>

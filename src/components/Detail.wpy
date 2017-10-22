@@ -1,0 +1,125 @@
+<template>
+<view wx:for="{{ list }}" class="detail-item"
+  wx:for-index="index" wx:key="index" wx:for-item="detail">
+
+  <view class="left">
+    <view wx:if="{{ detail.date.isSpec }}" class="spec">{{ detail.date.text }}</view>
+    <view wx:else>
+      <text class="day">{{ detail.date.day }}</text>
+      <text class="month">{{ detail.date.month }}月</text>
+    </view>
+  </view>
+
+  <view class="right">
+    <repeat for="{{ detail.data }}" index="index" key="index" item="item">
+      <view class="report">{{ item.value[0].name }}</view>
+      <view class="remark">{{ item.value[0].remarkShowText }}</view>
+    </repeat>
+  </view>
+
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+
+export default class Detail extends wepy.component {
+  props = {
+    detailList: {
+      type: Array,
+      default: []
+    }
+  }
+
+  computed = {
+    list() {
+      const that = this
+      return this.detailList.map(v => {
+        return Object.assign({}, v, {
+          date: that.specialDay(v.date),
+          data: v.data.map(data => Object.assign({}, data, {
+            value: data.value.map(val => Object.assign(
+              {}, val,
+              {remarkShowText: val.remark.length > 50
+                ? val.remark.slice(0, 50) + '...' : val.remark}
+            ))
+          }))
+        })
+      })
+    }
+  }
+
+  /**
+   * 判断日期是否为今天和明天的特殊时间
+   * @param {Date} tdate
+   * @return {Object} => {
+   *    isSpec: Boolean // 是否为特殊时间
+   *    text: String // 今天或明天
+   *    month: String // 月份
+   *    day: String // 日期
+   *  }
+   */
+  specialDay(tdate) {
+    const today = new Date()
+    const date = new Date(tdate)
+    const tMonth = today.getMonth() + 1
+    const tDay = today.getDate()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    const dict = ['今天', '昨天']
+    if (tMonth === month && tDay - day <= 1) {
+      return {
+        isSpec: true,
+        text: dict[tDay - day]
+      }
+    } else {
+      return {
+        isSpec: false,
+        month,
+        day: day < 10 ? `0${day}` : day
+      }
+    }
+  }
+}
+</script>
+<style lang="less">
+.detail-item {
+  display: flex;
+  margin-top: 50rpx;
+  padding: 0 20rpx;
+
+  .left {
+    min-width: 150rpx;
+    justify-content: center;
+    display: flex;
+    font-weight: bold;
+    
+    .spec {
+      font-size: 52rpx;
+    }
+
+    .day {
+      font-size: 50rpx;
+    }
+
+    .month {
+      font-size: 24rpx;
+    }
+  }
+  .right {
+    flex-grow: 1;
+
+    .report {
+      font-size: 30rpx;
+      background-color: #eee;
+      padding: 10rpx 20rpx;
+      color: #555;
+    }
+
+    .remark {
+      font-size: 32rpx;
+      padding: 10rpx 0;
+    }
+  }
+}
+</style>

@@ -6,6 +6,9 @@
 <style lang="less" scoped> 
 </style>
 ```
+- wepy引入第三方库，没有进行压缩
+- computed属性无法双向绑定到子组件，这个[ISSUE](https://github.com/wepyjs/wepy/issues/300)中说已经解决了，但是经我测试依然不能用sync传到子组件中。
+- wepy的组件列表渲染有重大bug，repeat渲染时，父组件的props无法正常传到子组件里[待复现]
 
 ## 开发中遇到的问题
 

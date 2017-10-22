@@ -1,40 +1,99 @@
 <style lang="less">
-.user-bg {
-  width: 100%;
-  height: 500rpx;
+.container {
+  // 设置为fixed是为了能出发srcll事件
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+
+  .user-bg {
+    width: 100%;
+    height: 500rpx;
+  }
+
+  .loading-tip {
+    width: 100%;
+    text-align: center;
+    font-size: 30rpx;
+    color: #aaa;
+    padding: 20rpx 0;
+  }
 }
 </style>
 <template>
-<view>
+<scroll-view bindscrolltolower="loadmore" scroll-y="true" class="container">
   <image class="user-bg" src="../assets/bg.jpg" mode="aspectFill"/>
 
-  <UserInfo />
-</view>
+  <UserInfo :userInfo.sync="userInfo"
+    :myInfo.sync="myInfo"/>
+
+  <Detail :detailList.sync="detailList"/>
+
+  <view class="loading-tip">{{ noMore ? '没有更多了' :
+    isLoading ? '正在加载' : '上拉加载更多' }}</view>
+</scroll-view>
 </template>
 
 <script>
   import wepy from 'wepy'
+
   import UserInfo from '../components/UserInfo'
+  import Detail from '../components/Detail'
+
+  import { getUserDetail, getMyInfo } from '../utils/mock'
+  import { pick } from '../utils/utils'
 
   export default class Index extends wepy.page {
-    config = {
-      navigationBarTitleText: 'test'
-    }
     components = {
-      UserInfo: UserInfo
+      UserInfo,
+      Detail
     }
 
     data = {
+      myInfo: null,
+      userInfo: null,
+
+      count: null, // 所有数据条目
+      page: 0,
+      pagesize: 10,
+      detailList: [], // 用户动态详情
+
+      isLoading: false,
+      noMore: false
+    }
+
+    computed = {
 
     }
 
     async onLoad() {
-      let self = this
-      const userInfo = await this.$parent.getUserInfo()
-      console.log(userInfo)
-      if (userInfo) {
-        self.userInfo = userInfo
-        self.$apply()
+      wepy.showLoading({ title: '正在加载' })
+      this.$apply()
+      this.myInfo = await getMyInfo()
+      const detail = await getUserDetail()
+      this.userInfo = pick(detail.data, ['userid', 'nickname',
+        'photo', 'gender', 'birthday', 'wallpaper', 'disease', 'follow', 'gps'])
+      this.detailList = detail.data.list
+      this.page = 11
+      this.$apply()
+      this.afterLoad()
+      wepy.hideLoading()
+    }
+
+    afterLoad() {
+      if (!this.userInfo) return null
+      wepy.setNavigationBarTitle({ title: this.userInfo.nickname })
+    }
+
+    methods = {
+      loadmore() {
+        const that = this
+        this.isLoading = true
+        this.$apply()
+        setTimeout(function() {
+          that.isLoading = false
+          that.$apply()
+        }, 500)
       }
     }
   }

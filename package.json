@@ -33,6 +33,8 @@
     "underscore": "^1.8.3",
     "wepy-compiler-babel": "^1.5.1",
     "wepy-compiler-less": "^1.3.10",
-    "wepy-eslint": "^1.5.2"
+    "wepy-eslint": "^1.5.2",
+    "wepy-plugin-imagemin": "^1.5.2",
+    "wepy-plugin-uglifyjs": "^1.3.6"
   }
 }

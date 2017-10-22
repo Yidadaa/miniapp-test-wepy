@@ -4,8 +4,8 @@
       <view class="left">
         <view class="buttons">
           <block wx:if="{{showButtons}}">
-            <view class="follow button" >{{ follow }}</view>
-            <view class="chat button" >私信</view>
+            <view class="follow button" @tap="onFollowBtn">{{ follow }}</view>
+            <view class="chat button" @tap="onChatBtn">私信</view>
           </block>
         </view>
 
@@ -28,20 +28,22 @@
   * @author Yidadaa
   */
   import wepy from 'wepy'
-  import { getUserDetail, getMyInfo } from '../utils/mock'
-  import _ from 'underscore'
 
   export default class UserInfo extends wepy.component {
-    data = {
-      showButtons: true,
-      myInfo: null,
-      userInfo: null,
-      isLoading: true
-    };
+    props = {
+      userInfo: {
+        type: Object,
+        default: null
+      },
+      myInfo: {
+        type: Object,
+        default: null
+      }
+    }
 
     computed = {
       showButtons() {
-        // 判断是否是在看自己的动态
+        // 判断是否显示私信、关注按钮
         return !!this.myInfo &&
           !!this.userInfo &&
           this.myInfo.userid !== this.userInfo.userid
@@ -67,17 +69,24 @@
         if (!this.userInfo) return ''
         return this.userInfo.follow ? '√ 已关注' : '+ 关注'
       }
-    };
+    }
 
-    async onLoad() {
-      this.isLoading = true
-      this.$apply()
-      this.myInfo = await getMyInfo()
-      const detail = await getUserDetail()
-      this.userInfo = _.pick(detail.data, 'userid', 'nickname',
-        'photo', 'gender', 'birthday', 'wallpaper', 'disease', 'follow', 'gps')
-      
-      this.$apply()
+    methods = {
+      onFollowBtn() {
+        if (this.showButtons && this.userInfo.follow) {
+          wepy.showModal({
+            title: '确认',
+            content: '确认取消关注该用户？',
+            success: () => {
+              // TODO: 触发取消关注请求
+              console.log('unfollow user!')
+            }
+          })
+        }
+      },
+      onChatBtn() {
+        console.log('chat button pressed!')
+      }
     }
   }
 </script>
