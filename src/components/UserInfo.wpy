@@ -1,0 +1,17 @@
+<template>
+  
+</template>
+<script>
+  /**
+  * 用户个人信息展示
+  * @author Yidadaa
+  */
+  import wepy from 'wepy'
+
+  export default class UserInfo extends wepy.page {
+
+  }
+</script>
+<style lang="less" scoped>
+
+</style>

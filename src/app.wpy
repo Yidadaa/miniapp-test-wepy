@@ -1,0 +1,56 @@
+<style lang="less">
+
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    }
+  }
+
+  globalData = {
+    userInfo: null
+  }
+
+  // constructor () {
+  //   super()
+  //   console.log('hello')
+  //   this.use('requestfix')
+  //   // TODO: requestfix有什么作用
+  // }
+
+  async onLaunch() {
+    this.globalData.userInfo = await this.getUserInfo()
+  }
+
+  /**
+   * 获取用户信息
+   * @return {Promise} 包含用户信息的Promise对象
+   */
+  getUserInfo() {
+    const that = this
+    return new Promise((resolve, reject) => {
+      if (that.globalData.userInfo) {
+        resolve(that.globalData.userInfo)
+      } else {
+        wepy.getUserInfo({
+          success: res => {
+            resolve(res.userInfo)
+          }
+        })
+      }
+    })
+  }
+}
+</script>

@@ -1,0 +1,41 @@
+<style lang="less">
+
+</style>
+<template>
+<view>
+  hello
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+
+    }
+
+    data = {
+
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+
+    async onLoad() {
+      let self = this
+      const userInfo = await this.$parent.getUserInfo()
+      console.log(userInfo)
+      if (userInfo) {
+        self.userInfo = userInfo
+        self.$apply()
+      }
+    }
+  }
+</script>
