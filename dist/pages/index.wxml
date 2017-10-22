@@ -1,4 +1,29 @@
 
 <view>
-  hello
+  <image class="user-bg" src="../assets/bg.jpg" mode="aspectFill"/>
+
+  
+  <view class="userinfo-container">
+    <view class="top">
+      <view class="left">
+        <view class="buttons">
+          <block  wx:if="{{$UserInfo$showButtons}}">
+            <view class="follow button">{{ $UserInfo$follow }}</view>
+            <view class="chat button">私信</view>
+          </block>
+        </view>
+
+        <text class="username">{{ $UserInfo$userInfo ? $UserInfo$userInfo.nickname : '' }}</text>
+      </view>
+      <image class="user-avatar" src="{{ $UserInfo$userInfo && $UserInfo$userInfo.photo }}"/>
+    </view>
+
+    <view class="bottom">
+      <text class="text">{{ $UserInfo$disease }}</text>
+      <text class="{{ $UserInfo$gender === '♂' ? 'text male' : 'text female' }}">{{ $UserInfo$gender }}</text>
+      <text>{{ $UserInfo$age }}</text>
+      <text class="text">上海</text>
+    </view>
+  </view>
+
 </view>

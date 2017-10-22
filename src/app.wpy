@@ -12,23 +12,17 @@ export default class extends wepy.app {
       'pages/index'
     ],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
-    }
+      "backgroundTextStyle":"light",
+      "navigationBarBackgroundColor": "rgb(56, 57, 61)",
+      "navigationBarTitleText": "我的相册",
+      "navigationBarTextStyle":"white",
+      "enablePullDownRefresh": true
+    },
   }
 
   globalData = {
     userInfo: null
   }
-
-  // constructor () {
-  //   super()
-  //   console.log('hello')
-  //   this.use('requestfix')
-  //   // TODO: requestfix有什么作用
-  // }
 
   async onLaunch() {
     this.globalData.userInfo = await this.getUserInfo()

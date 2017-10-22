@@ -1,1 +1,1 @@
-{"pages":["pages/index"],"window":{"backgroundTextStyle":"light","navigationBarBackgroundColor":"#fff","navigationBarTitleText":"WeChat","navigationBarTextStyle":"black"}}
+{"pages":["pages/index"],"window":{"backgroundTextStyle":"light","navigationBarBackgroundColor":"rgb(56, 57, 61)","navigationBarTitleText":"我的相册","navigationBarTextStyle":"white","enablePullDownRefresh":true}}

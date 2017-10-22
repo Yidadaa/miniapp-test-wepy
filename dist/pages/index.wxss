@@ -1,0 +1,2 @@
+@import "./../components/UserInfo.wxss";
+.user-bg{width:100%;height:500rpx}

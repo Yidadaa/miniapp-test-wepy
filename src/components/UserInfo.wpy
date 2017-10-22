@@ -1,5 +1,26 @@
 <template>
-  
+  <view class="userinfo-container">
+    <view class="top">
+      <view class="left">
+        <view class="buttons">
+          <block wx:if="{{showButtons}}">
+            <view class="follow button" >{{ follow }}</view>
+            <view class="chat button" >私信</view>
+          </block>
+        </view>
+
+        <text class="username">{{ userInfo ? userInfo.nickname : '' }}</text>
+      </view>
+      <image class="user-avatar" src="{{ userInfo && userInfo.photo }}"></image>
+    </view>
+
+    <view class="bottom">
+      <text class="text">{{ disease }}</text>
+      <text class="{{ gender === '♂' ? 'text male' : 'text female' }}">{{ gender }}</text>
+      <text>{{ age }}</text>
+      <text class="text">上海</text>
+    </view>
+  </view>
 </template>
 <script>
   /**
@@ -7,11 +28,134 @@
   * @author Yidadaa
   */
   import wepy from 'wepy'
+  import { getUserDetail, getMyInfo } from '../utils/mock'
+  import _ from 'underscore'
 
-  export default class UserInfo extends wepy.page {
+  export default class UserInfo extends wepy.component {
+    data = {
+      showButtons: true,
+      myInfo: null,
+      userInfo: null,
+      isLoading: true
+    };
 
+    computed = {
+      showButtons() {
+        // 判断是否是在看自己的动态
+        return !!this.myInfo &&
+          !!this.userInfo &&
+          this.myInfo.userid !== this.userInfo.userid
+      },
+
+      disease() {
+        return this.userInfo ? this.userInfo.disease.join(', ') : ''
+      },
+
+      age() {
+        if (!this.userInfo) return ''
+        const birthday = new Date(this.userInfo.birthday)
+        return new Date().getFullYear() - birthday.getFullYear()
+      },
+
+      gender() {
+        if (!this.userInfo) return ''
+        const dict = { '1': '♂', '2': '♀' }
+        return dict[this.userInfo.gender]
+      },
+
+      follow() {
+        if (!this.userInfo) return ''
+        return this.userInfo.follow ? '√ 已关注' : '+ 关注'
+      }
+    };
+
+    async onLoad() {
+      this.isLoading = true
+      this.$apply()
+      this.myInfo = await getMyInfo()
+      const detail = await getUserDetail()
+      this.userInfo = _.pick(detail.data, 'userid', 'nickname',
+        'photo', 'gender', 'birthday', 'wallpaper', 'disease', 'follow', 'gps')
+      
+      this.$apply()
+    }
   }
 </script>
-<style lang="less" scoped>
+<style lang="less">
+.userinfo-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 25rpx;
+  margin-top: -120rpx;
 
+  .top {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+
+    .left {
+      display:flex;
+      flex-wrap:wrap;
+      margin-right: 25rpx;
+
+      .buttons {
+        display: flex;
+        justify-content: flex-end;
+        height: 120rpx;
+        width: 100%;
+        align-items: center;
+
+        .button {
+          margin-left: 25rpx;
+          font-size: 25rpx;
+          padding: 5rpx 20rpx;
+          border-radius: 5rpx;
+        }
+        .follow {
+          background-color: #fff;
+          color: rgb(78, 196, 29);
+        }
+        .chat {
+          color: #fff;
+          background-color: rgb(78, 196, 29);
+        }
+      }
+      .username {
+        color: #000;
+        font-size: 40rpx;
+        width: 100%;
+        text-align: right;
+        line-height: 80rpx;
+      }
+    }
+
+    .user-avatar {
+      height: 200rpx;
+      width: 200rpx;
+      border: 6rpx solid #fff;
+      box-shadow: 0 0 2rpx rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  .bottom {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    font-size: 25rpx;
+    margin-top: 10rpx;
+    color: #555;
+
+    .text {
+      margin-left: 10rpx;
+    }
+
+    .male {
+      color: dodgerblue;
+    }
+
+    .female {
+      color: pink;
+    }
+  }
+}
 </style>
