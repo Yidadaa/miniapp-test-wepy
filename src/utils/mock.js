@@ -57,28 +57,125 @@ const getDateList = n => {
     "text": "xxxxxxxx",         //系统建议 
     "data": []
   }
-  const item = n => {
-    return new Array(n).fill({
+  const blood = () => {
+    return {
       "type": "blood",  // blood/sugar/weight/medindex
       "value": [{ //blood时是[lowpress,highpress,heart],其他都是单个
-        "value": 12,     //具体指标 的值
+        "value": rand(100) + 20,     //具体指标 的值
         "para": "",       //体重传BMI，血糖传meal_type，其他不传
         "remark": new Array(rand(10) + 10).fill('今天头痛').join(''),
         "ctime": "2016-01-12 12:00:12",
         "bmesh": "loinc-123213",   //指标
         "name": "高压",   //空腹血糖，饭前血糖
         "range": {
-          "low": [0, 1],   // 过低
-          "normal": [1, 2],  // 正常
-          "slight": [2, 3],  // 轻度
-          "moderate": [3, 4],// 中度
-          "severe": [4, 5]   // 重度
+          "low": [0, 30],   // 过低
+          "normal": [30, 50],  // 正常
+          "slight": [50, 90],  // 轻度
+          "moderate": [90, 110],// 中度
+          "severe": [110, 200]   // 重度
+        }
+      }, { //blood时是[lowpress,highpress,heart],其他都是单个
+        "value": rand(100) + 50,     //具体指标 的值
+        "para": "",       //体重传BMI，血糖传meal_type，其他不传
+        "remark": new Array(rand(10) + 10).fill('今天头痛').join(''),
+        "ctime": "2016-01-12 12:00:12",
+        "bmesh": "loinc-123213",   //指标
+        "name": "低压",   //空腹血糖，饭前血糖
+        "range": {
+          "low": [0, 30],   // 过低
+          "normal": [30, 50],  // 正常
+          "slight": [50, 90],  // 轻度
+          "moderate": [90, 110],// 中度
+          "severe": [110, 200]   // 重度
+        }
+      }, { //blood时是[lowpress,highpress,heart],其他都是单个
+        "value": rand(150) + 50,     //具体指标 的值
+        "para": "",       //体重传BMI，血糖传meal_type，其他不传
+        "remark": new Array(rand(10) + 10).fill('今天头痛').join(''),
+        "ctime": "2016-01-12 12:00:12",
+        "bmesh": "loinc-123213",   //指标
+        "name": "心率",   //空腹血糖，饭前血糖
+        "range": {
+          "low": [0, 50],   // 过低
+          "normal": [50, 100],  // 正常
+          "slight": [100, 120],  // 轻度
+          "moderate": [120, 140],// 中度
+          "severe": [140, 200]   // 重度
         }
       }]
-    });
+    }
+  }
+
+  const sugar = () => {
+    return {
+      "type": "sugar",  // blood/sugar/weight/medindex
+      "value": { //blood时是[lowpress,highpress,heart],其他都是单个
+        "value": rand(100) + 50,     //具体指标 的值
+        "para": "餐前",       //体重传BMI，血糖传meal_type，其他不传
+        "remark": new Array(rand(10) + 10).fill('血糖').join(''),
+        "ctime": "2016-01-12 12:00:12",
+        "bmesh": "loinc-123213",   //指标
+        "name": "餐前",   //空腹血糖，饭前血糖
+        "range": {
+          "low": [0, 30],   // 过低
+          "normal": [30, 50],  // 正常
+          "slight": [60, 70],  // 轻度
+          "moderate": [70, 110],// 中度
+          "severe": [110, 200]   // 重度
+        }
+      }
+    }
+  }
+
+  const weight = () => {
+    return {
+      "type": "weight",  // blood/sugar/weight/medindex
+      "value": { //blood时是[lowpress,highpress,heart],其他都是单个
+        "value": rand(100) + 50,     //具体指标 的值
+        "para": rand(10) + 15,       //体重传BMI，血糖传meal_type，其他不传
+        "remark": new Array(rand(5) + 2).fill('体重').join(''),
+        "ctime": "2016-01-12 12:00:12",
+        "bmesh": "loinc-123213",   //指标
+        "name": "餐前",   //空腹血糖，饭前血糖
+        "range": {
+          "low": [0, 30],   // 过低
+          "normal": [30, 50],  // 正常
+          "slight": [60, 70],  // 轻度
+          "moderate": [70, 110],// 中度
+          "severe": [110, 200]   // 重度
+        }
+      }
+    }
+  }
+
+  const medindex = () => {
+    return {
+      "type": "medindex",  // blood/sugar/weight/medindex
+      "value": { //blood时是[lowpress,highpress,heart],其他都是单个
+        "value": rand(100) + 50,     //具体指标 的值
+        "para": 'mmol/L',       //体重传BMI，血糖传meal_type，其他不传
+        "remark": new Array(rand(5) + 2).fill('医学指标').join(''),
+        "ctime": "2016-01-12 12:00:12",
+        "bmesh": "loinc-123213",   //指标
+        "name": "甘油三酯(GT)",   //空腹血糖，饭前血糖
+        "range": {
+          "low": [0, 30],   // 过低
+          "normal": [30, 50],  // 正常
+          "slight": [60, 70],  // 轻度
+          "moderate": [70, 110],// 中度
+          "severe": [110, 200]   // 重度
+        }
+      }
+    }
+  }
+
+  const type = { blood, sugar, weight, medindex }
+  const types = Object.keys(type)
+  const item = n => {
+    return new Array(n).fill(0).map((v, i) => type[types[i % types.length]]())
   }
   return Object.assign({}, data, {
-    data: item(1)
+    data: item(types.length)
   })
 }
 

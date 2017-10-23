@@ -39,9 +39,58 @@
   </view>
 
   <view class="right">
-    <block wx:for="{{ detail.data }}" wx:for-index="$Detail$index" wx:for-item="$Detail$item" wx:key="$Detail$index">
-      <view class="report">{{ $Detail$item.value[0].name }}</view>
-      <view class="remark">{{ $Detail$item.value[0].remarkShowText }}</view>
+    <block wx:for="{{ detail.data }}" wx:for-index="index" wx:key="index" wx:for-item="item">
+
+      <view class="report">
+        <block wx:if="{{ item.type === 'blood' }}">
+          <view>
+            <text>今日血压：</text>
+            <text style="color:{{ item.value[0].textColor }}">{{ item.value[0].value }}</text>
+            <text> / </text>
+            <text style="color:{{ item.value[1].textColor }}">{{ item.value[1].value }}</text>
+            <text> mmHg</text>
+          </view>
+
+          <view>
+            <text>心率：</text><text style="color:{{ item.value[2].textColor }}">{{ item.value[2].value }}</text>
+            <text> bpm</text>
+          </view>
+        </block>
+
+        <view wx:elif="{{ item.type === 'sugar' }}">
+          <text>今日血糖：</text>
+          <text>{{ item.value.name }} </text>
+          <text style="color: {{ item.value.textColor }}">{{ item.value.value }}</text>
+          <text> mmol/L</text>
+        </view>
+
+        <block wx:elif="{{ item.type === 'weight' }}">
+          <view>
+            <text>今日体重：</text>
+            <text style="color:{{ item.value.textColor }}">{{ item.value.value }}</text>
+            <text> kg</text>
+          </view>
+
+          <view>
+            <text>BMI指数：</text>
+            <text style="color:{{ item.value.textColor }}">{{ item.value.para }}</text>
+          </view>
+        </block>
+
+        <view wx:elif="{{ item.type === 'medindex' }}">
+          <text>今日医学指标：</text>
+          <text>{{ item.value.name }} </text>
+          <text style="color: {{ item.value.textColor }}">{{ item.value.value }}</text>
+          <text> {{ item.value.para }}</text>
+        </view>
+      </view>
+      <view class="remark">
+        {{
+          item.type === 'blood' ?
+            item.value[0].remarkShowText :
+            item.value.remarkShowText
+        }}
+      </view>
     </block>
   </view>
 

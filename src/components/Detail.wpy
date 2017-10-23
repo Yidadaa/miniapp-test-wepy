@@ -11,10 +11,60 @@
   </view>
 
   <view class="right">
-    <repeat for="{{ detail.data }}" index="index" key="index" item="item">
-      <view class="report">{{ item.value[0].name }}</view>
-      <view class="remark">{{ item.value[0].remarkShowText }}</view>
-    </repeat>
+    <block wx:for="{{ detail.data }}" wx:for-index="index"
+      wx:key="index" wx:for-item="item">
+
+      <view class="report">
+        <block wx:if="{{ item.type === 'blood' }}">
+          <view>
+            <text>今日血压：</text>
+            <text style="color:{{ item.value[0].textColor }}">{{ item.value[0].value }}</text>
+            <text> / </text>
+            <text style="color:{{ item.value[1].textColor }}">{{ item.value[1].value }}</text>
+            <text> mmHg</text>
+          </view>
+
+          <view>
+            <text>心率：</text><text style="color:{{ item.value[2].textColor }}">{{ item.value[2].value }}</text>
+            <text> bpm</text>
+          </view>
+        </block>
+
+        <view wx:elif="{{ item.type === 'sugar' }}">
+          <text>今日血糖：</text>
+          <text>{{ item.value.name }} </text>
+          <text style="color: {{ item.value.textColor }}">{{ item.value.value }}</text>
+          <text> mmol/L</text>
+        </view>
+
+        <block wx:elif="{{ item.type === 'weight' }}">
+          <view>
+            <text>今日体重：</text>
+            <text style="color:{{ item.value.textColor }}">{{ item.value.value }}</text>
+            <text> kg</text>
+          </view>
+
+          <view>
+            <text>BMI指数：</text>
+            <text style="color:{{ item.value.textColor }}">{{ item.value.para }}</text>
+          </view>
+        </block>
+
+        <view wx:elif="{{ item.type === 'medindex' }}">
+          <text>今日医学指标：</text>
+          <text>{{ item.value.name }} </text>
+          <text style="color: {{ item.value.textColor }}">{{ item.value.value }}</text>
+          <text> {{ item.value.para }}</text>
+        </view>
+      </view>
+      <view class="remark">
+        {{
+          item.type === 'blood' ?
+            item.value[0].remarkShowText :
+            item.value.remarkShowText
+        }}
+      </view>
+    </block>
   </view>
 
 </view>
@@ -34,18 +84,24 @@ export default class Detail extends wepy.component {
   computed = {
     list() {
       const that = this
-      return this.detailList.map(v => {
+      const processValue = val => Object.assign(
+        {}, val,
+        {
+          remarkShowText: val.remark.length > 50
+            ? val.remark.slice(0, 50) + '...' : val.remark, // 对remark文字进行截断处理
+          textColor: this.getTextColor(val.value, val.range) // 计算文本颜色
+        }
+      )
+      const list = this.detailList.map(v => {
         return Object.assign({}, v, {
           date: that.specialDay(v.date),
           data: v.data.map(data => Object.assign({}, data, {
-            value: data.value.map(val => Object.assign(
-              {}, val,
-              {remarkShowText: val.remark.length > 50
-                ? val.remark.slice(0, 50) + '...' : val.remark}
-            ))
-          }))
+            value: data.value.map ? data.value.map(processValue) : processValue(data.value)
+          })) // 对于数组和单个值分开处理
         })
       })
+      // console.log(list)
+      return list
     }
   }
 
@@ -80,6 +136,31 @@ export default class Detail extends wepy.component {
       }
     }
   }
+
+  /**
+   * 获取某个值对应的颜色
+   * @param {Number} value
+   * @param {Object} range
+   * @param {String} color
+   */
+  getTextColor(value, range) {
+    const colorSet = {
+      low: 'blue',
+      normal: 'green',
+      slight: 'dodgerblue',
+      moderate: 'red',
+      severe: 'darkred'
+    }
+    let inRange = null
+    Object.keys(range).forEach(v => {
+      const [min, max] = range[v]
+      if (value >= min && value < max) {
+        inRange = v
+      }
+    })
+    // console.log(colorSet[inRange])
+    return colorSet[inRange] || '#aaa'
+  }
 }
 </script>
 <style lang="less">
@@ -110,15 +191,18 @@ export default class Detail extends wepy.component {
     flex-grow: 1;
 
     .report {
-      font-size: 30rpx;
+      font-size: 24rpx;
       background-color: #eee;
       padding: 10rpx 20rpx;
+      margin-top: 10rpx;
       color: #555;
+      display: flex;
+      justify-content: space-between;
     }
 
     .remark {
       font-size: 32rpx;
-      padding: 10rpx 0;
+      padding: 10rpx;
     }
   }
 }
