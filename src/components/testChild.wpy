@@ -1,0 +1,22 @@
+<template>
+<view>{{ hello }} {{ world }}</view>
+</template>
+
+<script>
+/**
+ * 仅用于测试
+ */
+import wepy from 'wepy'
+
+export default class TestChild extends wepy.component {
+  props = {
+    hello: String
+  }
+
+  computed = {
+    world() {
+      return this.hello + '_'
+    }
+  }
+}
+</script>

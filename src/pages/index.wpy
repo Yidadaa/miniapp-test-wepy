@@ -39,6 +39,7 @@
 
   import UserInfo from '../components/UserInfo'
   import Detail from '../components/Detail'
+  import TestChild from '../components/testChild'
 
   import { getUserDetail, getMyInfo } from '../utils/mock'
   import { pick } from '../utils/utils'
@@ -46,7 +47,8 @@
   export default class Index extends wepy.page {
     components = {
       UserInfo,
-      Detail
+      Detail,
+      TestChild
     }
 
     data = {
@@ -59,13 +61,13 @@
       detailList: [], // 用户动态详情
 
       isLoading: false,
-      noMore: false
+      noMore: false,
+
+      dataFuck: 0
     }
 
-    computed = {
-
-    }
-
+    computed = {}
+  
     async onLoad() {
       wepy.showLoading({ title: '正在加载' })
       this.$apply()
@@ -75,6 +77,7 @@
         'photo', 'gender', 'birthday', 'wallpaper', 'disease', 'follow', 'gps'])
       this.detailList = detail.data.list
       this.page = 11
+      console.log(this.page)
       this.$apply()
       this.afterLoad()
       wepy.hideLoading()

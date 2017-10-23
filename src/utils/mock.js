@@ -63,7 +63,7 @@ const getDateList = n => {
       "value": [{ //blood时是[lowpress,highpress,heart],其他都是单个
         "value": rand(100) + 20,     //具体指标 的值
         "para": "",       //体重传BMI，血糖传meal_type，其他不传
-        "remark": new Array(rand(10) + 10).fill('今天头痛').join(''),
+        "remark": new Array(rand(10) + 10).fill('血压').join(''),
         "ctime": "2016-01-12 12:00:12",
         "bmesh": "loinc-123213",   //指标
         "name": "高压",   //空腹血糖，饭前血糖
